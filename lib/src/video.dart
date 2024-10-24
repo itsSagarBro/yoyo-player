@@ -144,20 +144,21 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         .animate(controlBarAnimationController);
     controlBottomBarAnimation = Tween(begin: -(36.0 + 0.0 * 2), end: 0.0)
         .animate(controlBarAnimationController);
-    var widgetsBinding = WidgetsBinding.instance!;
+    var widgetsBinding = WidgetsBinding.instance;
 
     widgetsBinding.addPostFrameCallback((callback) {
       widgetsBinding.addPersistentFrameCallback((callback) {
-        if (context == null) return;
         var orientation = MediaQuery.of(context).orientation;
         bool? _fullscreen;
         if (orientation == Orientation.landscape) {
           //Horizontal screen
           _fullscreen = true;
-          SystemChrome.setEnabledSystemUIOverlays([]);
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+              overlays: []);
         } else if (orientation == Orientation.portrait) {
           _fullscreen = false;
-          SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+              overlays: SystemUiOverlay.values);
         }
         if (_fullscreen != fullScreen) {
           setState(() {
@@ -403,7 +404,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
         }
       },
     );
-    if (m3u8Content == null && video != null) {
+    if (m3u8Content == null) {
       http.Response response = await http.get(Uri.parse(video));
       if (response.statusCode == 200) {
         m3u8Content = utf8.decode(response.bodyBytes);
@@ -600,7 +601,8 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       }
       return;
     }
-    ModalRoute.of(context)!.addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
+    ModalRoute.of(context)!
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
       if (fullScreen) toggleFullScreen();
     }));
   }
