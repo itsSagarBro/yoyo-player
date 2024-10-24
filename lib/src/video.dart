@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-import 'package:orientation/orientation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http/http.dart' as http;
@@ -178,7 +176,7 @@ class _YoYoPlayerState extends State<YoYoPlayer>
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    FlutterScreenWake.keepOn(true);
+    WakelockPlus.toggle(enable: true);
   }
 
   @override
@@ -668,9 +666,14 @@ class _YoYoPlayerState extends State<YoYoPlayer>
 
   void toggleFullScreen() {
     if (fullScreen) {
-      OrientationPlugin.forceOrientation(DeviceOrientation.portraitUp);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
     } else {
-      OrientationPlugin.forceOrientation(DeviceOrientation.landscapeRight);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
     }
   }
 }
